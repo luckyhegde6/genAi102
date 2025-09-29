@@ -1,0 +1,8 @@
+{
+  "name": "Summarize File",
+  "steps": [
+    { "id": "step1", "type": "file.read", "params": { "path": "docs/sample.txt" } },
+    { "id": "step2", "type": "llm.query", "params": { "prompt": "Summarize: {{step1}}" } },
+    { "id": "step3", "type": "file.write", "params": { "path": "docs/summary.txt", "input": "step2" } }
+  ]
+}

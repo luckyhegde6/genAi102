@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run lint
+        run: npm run lint --if-present
+
+      - name: Run build
+        run: npm run build
+
+      - name: Prisma migrate check
+        run: npx prisma migrate status
+
+      - name: Run tests
+        run: npm run test --if-present
+        
+      - name: Sync OpenAPI spec to docs
+        run: cp src/docs/openapi.json docs/openapi.json
+
+  test:
+    name: Test on node ${{ matrix.node_version }} and ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        node_version: ['18.x', '20.x']
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Use Node.js ${{ matrix.node_version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node_version }}
+
+    - name: npm install, build and test
+      run: |
+        npm install
+        npm run build --if-present
+        npm test

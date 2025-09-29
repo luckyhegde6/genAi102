@@ -1,0 +1,62 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Agentic Task Automator API",
+    "version": "1.0.0",
+    "description": "API for running workflows and managing tasks."
+  },
+  "paths": {
+    "/api/workflows": {
+      "post": {
+        "summary": "Run a workflow",
+        "description": "Accepts a workflow JSON and runs it.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Workflow"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Workflow executed successfully"
+          }
+        }
+      }
+    },
+    "/api/tasks": {
+      "get": {
+        "summary": "List tasks",
+        "responses": {
+          "200": {
+            "description": "List of tasks"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Workflow": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "steps": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "type": { "type": "string" },
+                "params": { "type": "object" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
